@@ -1,6 +1,8 @@
 package view;
 
 import business.UserManager;
+import core.ComboItem;
+import core.Helper;
 import entity.Role;
 import entity.User;
 
@@ -19,19 +21,11 @@ public class AdminView extends Layout {
     private JButton btn_logout;
     private JTabbedPane tabbedPane1;
     private JPanel pnl_userlist;
-    private JPanel pnl_useradd;
     private JScrollPane scrl_userlist;
     private JTable tbl_user;
     private JComboBox<Role> cmb_search;
     private JButton btn_search;
-    private JLabel lbl_username;
-    private JTextField fld_username;
-    private JLabel lbl_password;
-    private JLabel lbl_role;
     private JComboBox<Role> cmb_role;
-    private JButton btn_save;
-    private JPasswordField fld_password;
-    private JLabel lbl_header;
     private User user;
     private DefaultTableModel tmdl_user_table = new DefaultTableModel();
     private UserManager userManager;
@@ -48,7 +42,16 @@ public class AdminView extends Layout {
 
         this.lbl_welcome.setText("Hoşgeldiniz: " + user.getUsername());
         loadUserTable();
+        loadUserComponent();
+        loadUserFilter();
+    }
 
+    public void loadUserTable() {
+        Object[] col_user = {"Kullanıcı ID", "Kullanıcı Adı", "Kullanıcı Şifresi", "Kullanıcı Rolü"};
+        ArrayList<Object[]> userList = userManager.getForTable(col_user.length);
+        this.createTable(this.tmdl_user_table, this.tbl_user, col_user, userList);
+    }
+    public void loadUserComponent() {
         tbl_user.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -69,7 +72,7 @@ public class AdminView extends Layout {
         });
 
         userMenu.add("Güncelle").addActionListener(e -> {
-            int selectedId = Integer.parseInt(tbl_user.getValueAt(tbl_user.getSelectedRow(), 0).toString());
+            int selectedId = this.getTableSelectedRow(tbl_user, 0);
             UserUpdateView userUpdateView = new UserUpdateView(this.userManager.getById(selectedId));
             userUpdateView.addWindowListener(new WindowAdapter() {
                 @Override
@@ -78,17 +81,31 @@ public class AdminView extends Layout {
                 }
             });
         });
-        userMenu.add("Sil");
+        userMenu.add("Sil").addActionListener(e -> {
+            if (Helper.confirm("sure")) {
+                int selectedRowId = this.getTableSelectedRow(tbl_user, 0);
+                if (this.userManager.delete(selectedRowId)) {
+                    Helper.showMsg("done");
+                    loadUserTable();
+                } else {
+                    Helper.showMsg("error");
+                }
+            }
+        });
         tbl_user.setComponentPopupMenu(userMenu);
 
-        cmb_role.setModel(new DefaultComboBoxModel<>(Role.values()));
+        this.btn_logout.addActionListener(e -> {
+            System.exit(0);
+        });
+
+       // cmb_search.setModel(new DefaultComboBoxModel<>(Role.values()));
+    }
+
+    public void loadUserFilter (){
         cmb_search.setModel(new DefaultComboBoxModel<>(Role.values()));
-
+        this.cmb_search.setSelectedItem(null);
     }
 
-    public void loadUserTable(){
-        Object[] col_user = {"Kullanıcı ID", "Kullanıcı Adı", "Kullanıcı Şifresi", "Kullanıcı Rolü"};
-        ArrayList<Object[]> userList = userManager.getForTable(col_user.length);
-        this.createTable(this.tmdl_user_table,this.tbl_user,col_user,userList);
-    }
+
+
 }

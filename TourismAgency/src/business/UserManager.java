@@ -2,6 +2,7 @@ package business;
 
 import core.Helper;
 import dao.UserDao;
+import entity.Role;
 import entity.User;
 
 import javax.management.ObjectName;
@@ -52,5 +53,24 @@ public class UserManager {
             Helper.showMsg("notFound");
         }
         return userDao.update(user);
+    }
+
+    public boolean delete(int id) {
+        if (this.getById(id) == null) {
+            Helper.showMsg("notFound");
+            return false;
+        }
+        return this.userDao.delete(id);
+    }
+
+    public ArrayList<User> searchForTable (Role role) {
+        String query = "SELECT * FROM public.user";
+        ArrayList<String> whereList = new ArrayList<>();
+
+        if( role != null) {
+            whereList.add("user_role = " + role.toString());
+        }
+        System.out.println(whereList);
+        return this.userDao.findAll();
     }
 }

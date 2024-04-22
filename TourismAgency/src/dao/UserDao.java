@@ -99,7 +99,19 @@ public class UserDao {
             pr.setString(1, user.getUsername());
             pr.setString(2, user.getPassword());
             pr.setString(3, user.getRole().toString());
-            pr.setInt(4,user.getId());
+            pr.setInt(4, user.getId());
+            return pr.executeUpdate() != -1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public boolean delete(int id) {
+        String query = "DELETE FROM public.user WHERE user_id = ?";
+        try {
+            PreparedStatement pr = connection.prepareStatement(query);
+            pr.setInt(1, id);
             return pr.executeUpdate() != -1;
         } catch (SQLException e) {
             e.printStackTrace();

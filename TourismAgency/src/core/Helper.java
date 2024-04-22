@@ -57,6 +57,16 @@ public class Helper {
         return false;
     }
 
+    public static boolean confirm(String str) {
+        String msg;
+        if (str.equals("sure")) {
+            msg = "İşlemi yapmak istediğine emib misin?";
+        } else {
+            msg = str;
+        }
+        return JOptionPane.showConfirmDialog(null,msg,"Emin mismn?",JOptionPane.YES_NO_OPTION)==0;
+    }
+
     public static int getLocationPoint(String type, Dimension size) {
         return switch (type) {
             case "x" -> (Toolkit.getDefaultToolkit().getScreenSize().width - size.width) / 2;

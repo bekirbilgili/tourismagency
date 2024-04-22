@@ -15,7 +15,7 @@ public class Layout extends JFrame {
         this.setVisible(true);
     }
 
-    public void createTable (DefaultTableModel model, JTable table, Object[] columns, ArrayList<Object[]> rows){
+    public void createTable(DefaultTableModel model, JTable table, Object[] columns, ArrayList<Object[]> rows) {
         model.setColumnIdentifiers(columns);
         table.setModel(model);
         table.getTableHeader().setReorderingAllowed(false);
@@ -32,6 +32,9 @@ public class Layout extends JFrame {
         for (Object[] row : rows) {
             model.addRow(row);
         }
+    }
 
+    public int getTableSelectedRow(JTable table, int index) {
+        return Integer.parseInt(table.getValueAt(table.getSelectedRow(), index).toString());
     }
 }
