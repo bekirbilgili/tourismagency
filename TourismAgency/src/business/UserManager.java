@@ -5,7 +5,6 @@ import dao.UserDao;
 import entity.Role;
 import entity.User;
 
-import javax.management.ObjectName;
 import java.util.ArrayList;
 
 public class UserManager {
@@ -72,5 +71,9 @@ public class UserManager {
         }
         System.out.println(whereList);
         return this.userDao.findAll();
+    }
+
+    public String whatIsMyRole (User user) {
+        return user.getRole().toString();
     }
 }

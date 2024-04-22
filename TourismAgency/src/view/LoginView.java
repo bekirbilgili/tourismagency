@@ -21,9 +21,11 @@ public class LoginView extends JFrame {
     private JLabel lbl_username;
     private JLabel lbl_userpassword;
     private final UserManager userManager;
+    private User user;
 
     public LoginView() {
         this.userManager = new UserManager();
+        this.user = new User();
         this.add(container);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setTitle("PATIKA TURIZM ACENTASI");
@@ -39,9 +41,21 @@ public class LoginView extends JFrame {
                 User loginUser = this.userManager.findByLogin(this.fld_username.getText(), this.fld_userpassword.getText());
                 if (loginUser == null) {
                     Helper.showMsg("notFound");
-                }else {
-                    AdminView adminView = new AdminView(loginUser);
-                    dispose();
+                } else {
+
+                    if (userManager.whatIsMyRole(loginUser).equals("ADMIN")) {
+                        AdminView adminView = new AdminView(loginUser);
+                        dispose();
+                    } else if ((userManager.whatIsMyRole(loginUser).equals("EMPLOYEE"))) {
+                        EmployeeView employeeView = new EmployeeView(loginUser);
+                        dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "TANIMLANAMAYAN KULLANICI TİPİ",
+                                "HATA",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    }
+
                 }
             }
         });
